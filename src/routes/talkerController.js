@@ -1,5 +1,5 @@
 const express = require('express');
-const readData = require('../functions/readJson');
+const readData = require('../utils/readJson');
 const dataFileValidator = require('../middlewares/dataFileValidator');
 const talkerIdValidator = require('../middlewares/talkerIdValidator');
 

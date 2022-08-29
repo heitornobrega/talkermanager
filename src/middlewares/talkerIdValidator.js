@@ -1,4 +1,4 @@
-const readData = require('../functions/readJson');
+const readData = require('../utils/readJson');
 
 const talkerIdValidator = async (req, res, next) => {
     const data = await readData();

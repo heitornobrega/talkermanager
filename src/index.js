@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const talkerController = require('./routes/talkerController');
-// const loginController = require('./routes/loginController');
+const loginController = require('./routes/loginController');
 
 const app = express();
 app.use(bodyParser.json());
-// app.use('/login', loginController);
+app.use('/login', loginController);
 app.use('/talker', talkerController);
 
 const HTTP_OK_STATUS = 200;
