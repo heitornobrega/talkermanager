@@ -20,6 +20,15 @@ talkerRoutes.get('/', dataFileValidator, async (req, res) => {
   res.status(200).json(data);
 });
 
+talkerRoutes.get('/search', tokenValidator, async (req, res) => {
+  const { q } = req.query;
+  const data = await readData();
+  if (!q) return res.status(200).json(data);
+  const result = data.filter(({ name }) => name.includes(q));
+  if (!result) return res.status(200).json([]);
+  return res.status(200).json(result);
+});
+
 talkerRoutes.get('/:id', talkerIdValidator, async (req, res) => {
   const data = await readData();
   const { id: idParams } = req.params;
