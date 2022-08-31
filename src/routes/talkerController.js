@@ -9,6 +9,7 @@ const rateValidator = require('../middlewares/rateValidator');
 const talkValidator = require('../middlewares/talkValidator');
 const tokenValidator = require('../middlewares/tokenValidator');
 const watchedAtValidator = require('../middlewares/watchedAtValidator');
+// const idValidator = require('../middlewares/idValidator');
 
 const talkerRoutes = express.Router();
 
@@ -41,8 +42,36 @@ talkerRoutes.post(
     const newData = [...data, { id: newId, ...req.body }];
     writeData(newData);
     const updatedData = await readData();
-    const lastTalker = updatedData[updatedData.length - 1];
+    const lastTalker = updatedData.at(-1);
     res.status(201).json(lastTalker);
+},
+);
+
+talkerRoutes.put(
+  '/:id',
+  // idValidator,
+  tokenValidator,
+  nameValidator,
+  ageValidator,
+  talkValidator,
+  watchedAtValidator,
+  rateValidator,
+  async (req, res) => {
+    const { id } = req.params;
+    const idInt = Number(id);
+    const data = await readData();
+    const userData = data.find((users) => users.id === idInt);
+    console.log(userData);
+    if (!userData) {
+      res.status(401).json({ message: 'Not Found' });
+    }
+    const userIndex = data.indexOf(userData);
+    const updatedUser = { ...req.body, id: idInt };
+    data.splice(userIndex, 1, updatedUser);
+    await writeData(data);
+    const newData = await readData();
+    const updatedUserFromDb = newData[userIndex];
+    res.status(200).json(updatedUserFromDb);
 },
 );
 
