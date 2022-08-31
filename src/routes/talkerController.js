@@ -16,8 +16,8 @@ const talkerRoutes = express.Router();
 talkerRoutes.use(express.json());
 
 talkerRoutes.get('/', dataFileValidator, async (req, res) => {
-    const data = await readData();
-    res.status(200).json(data);
+  const data = await readData();
+  res.status(200).json(data);
 });
 
 talkerRoutes.get('/:id', talkerIdValidator, async (req, res) => {
@@ -44,7 +44,7 @@ talkerRoutes.post(
     const updatedData = await readData();
     const lastTalker = updatedData.at(-1);
     res.status(201).json(lastTalker);
-},
+  },
 );
 
 talkerRoutes.put(
@@ -72,7 +72,24 @@ talkerRoutes.put(
     const newData = await readData();
     const updatedUserFromDb = newData[userIndex];
     res.status(200).json(updatedUserFromDb);
-},
+  },
 );
+
+talkerRoutes.delete('/:id', tokenValidator, async (req, res) => {
+  const { id } = req.params;
+  const idInt = Number(id);
+  const data = await readData();
+  const userData = data.find((users) => users.id === idInt);
+  console.log(userData);
+  if (!userData) {
+    res.status(401).json({ message: 'Not Found' });
+  }
+  const userIndex = data.indexOf(userData);
+  if (userIndex > -1) { 
+    data.splice(userIndex, 1);
+  }
+  await writeData(data);
+  res.sendStatus(204);
+});
 
 module.exports = talkerRoutes;
