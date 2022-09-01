@@ -36,26 +36,6 @@ talkerRoutes.get('/:id', talkerIdValidator, async (req, res) => {
   res.status(200).json(user);
 });
 
-talkerRoutes.post(
-  '/',
-  tokenValidator,
-  nameValidator,
-  ageValidator,
-  talkValidator,
-  watchedAtValidator,
-  rateValidator,
-  async (req, res) => {
-    const data = await readData();
-    console.log(data);
-    const newId = data.length + 1;
-    const newData = [...data, { id: newId, ...req.body }];
-    writeData(newData);
-    const updatedData = await readData();
-    const lastTalker = updatedData.at(-1);
-    res.status(201).json(lastTalker);
-  },
-);
-
 talkerRoutes.put(
   '/:id',
   // idValidator,
@@ -81,6 +61,26 @@ talkerRoutes.put(
     const newData = await readData();
     const updatedUserFromDb = newData[userIndex];
     res.status(200).json(updatedUserFromDb);
+  },
+);
+
+talkerRoutes.post(
+  '/',
+  tokenValidator,
+  nameValidator,
+  ageValidator,
+  talkValidator,
+  watchedAtValidator,
+  rateValidator,
+  async (req, res) => {
+    const data = await readData();
+    console.log(data);
+    const newId = data.length + 1;
+    const newData = [...data, { id: newId, ...req.body }];
+    writeData(newData);
+    const updatedData = await readData();
+    const lastTalker = updatedData[updatedData.length - 1];
+    res.status(201).json(lastTalker);
   },
 );
 
